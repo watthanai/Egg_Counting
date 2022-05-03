@@ -1,4 +1,5 @@
 from matplotlib import units
+
 import numpy as np
 import pprint
 import sys
@@ -6,6 +7,7 @@ import datetime
 import math
 import cv2
 import pandas as pd
+
 import matplotlib.pyplot as plt
 from getdist import plots, MCSamples
 
@@ -70,10 +72,15 @@ if (cap.isOpened()== False):
 
 # Read until video is completed
 fgbg = cv2.createBackgroundSubtractorMOG2()  # for mask
+#fourcc = cv2.VideoWriter_fourcc(*'XVID')
+# fourcc = cv2.cv.CV_FOURCC(*'XVID')  # cv2.VideoWriter_fourcc() does not exist
+#out = cv2.VideoWriter("output.avi", fourcc, 20, (1280,700))
+
+
 while True:
 
     (grabbed, frame) = cap.read()
-
+    #out.write(frame)
     if not grabbed:
         print('Egg count: ' + str(eggCount))
         print('\n End of the video file...')
@@ -190,7 +197,7 @@ while True:
 
                 if area >= int(area_min) and area <= int(area_max):
                     #print('egg list: ' + str(egg_list) + ' index: ' + str(egg_index))
-
+                    
                     if CheckInTheArea(coordYContour, coordYEntranceLine, coordYExitLine):
                         cv2.ellipse(frame40, (coordXContour, coordYContour), (ax1, ax2), orientation, 0, 360,
                                     (255, 0, 0), 2)  # blue
@@ -212,10 +219,12 @@ while True:
                         eggCount += 1
                         egg_list[egg_index][2] = True
 
+                
                 cv2.putText(frame40, "Entrance Eggs: {}".format(str(eggCount)), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                             (250, 0, 1), 2)
 
     cv2.imshow("Original Frame", frame40)
+    
     key = cv2.waitKey(1)
     print("angle",angle,axis)
     if key == 27:
@@ -223,6 +232,7 @@ while True:
 
 # When everything done, release the video capture object
 cap.release()
+#out.release()
 
 # Closes all the frames
 cv2.destroyAllWindows()
